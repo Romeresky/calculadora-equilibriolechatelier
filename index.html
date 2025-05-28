@@ -17,29 +17,35 @@
     </p>
 
     <form id="formulario" onsubmit="event.preventDefault(); calcularKcAvanzado();">
-      <fieldset>
-        <legend>Coeficientes estequiométricos (a, b, c, d)</legend>
-        <label for="a">a (A):</label>
-        <input type="number" id="a" min="1" step="1" required />
-        <label for="b">b (B):</label>
-        <input type="number" id="b" min="1" step="1" required />
-        <label for="c">c (C):</label>
-        <input type="number" id="c" min="1" step="1" required />
-        <label for="d">d (D):</label>
-        <input type="number" id="d" min="1" step="1" required />
-      </fieldset>
-
-      <fieldset>
-        <legend>Concentraciones molares (mol/L)</legend>
-        <label for="A">[A]:</label>
-        <input type="number" id="A" min="0.01" step="0.01" required />
-        <label for="B">[B]:</label>
-        <input type="number" id="B" min="0.01" step="0.01" required />
-        <label for="C">[C]:</label>
-        <input type="number" id="C" min="0.01" step="0.01" required />
-        <label for="D">[D]:</label>
-        <input type="number" id="D" min="0.01" step="0.01" required />
-      </fieldset>
+    <fieldset>
+      <legend>Coeficientes estequiométricos</legend>
+      <label for="a">a (A):</label>
+      <input type="number" id="a" min="1" step="1" required title="Coeficiente para A (≥1)"/>
+      
+      <label for="b">b (B):</label>
+      <input type="number" id="b" min="1" step="1" required title="Coeficiente para B (≥1)"/>
+      
+      <label for="c">c (C):</label>
+      <input type="number" id="c" min="1" step="1" required title="Coeficiente para C (≥1)"/>
+      
+      <label for="d">d (D):</label>
+      <input type="number" id="d" min="0" step="1" title="Coeficiente para D (0 si no aplica)"/>
+    </fieldset>
+    
+    <fieldset>
+      <legend>Concentraciones molares (mol/L)</legend>
+      <label for="A">[A]:</label>
+      <input type="number" id="A" min="0" step="0.01" required title="Concentración de A (≥0)"/>
+      
+      <label for="B">[B]:</label>
+      <input type="number" id="B" min="0" step="0.01" required title="Concentración de B (≥0)"/>
+      
+      <label for="C">[C]:</label>
+      <input type="number" id="C" min="0" step="0.01" required title="Concentración de C (≥0)"/>
+      
+      <label for="D">[D]:</label>
+      <input type="number" id="D" min="0" step="0.01" title="Concentración de D (0 si no aplica)"/>
+    </fieldset>
 
       <fieldset>
         <legend>Tipo de reacción</legend>
