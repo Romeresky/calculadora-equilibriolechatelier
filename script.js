@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function cargarEjemplo() {
-  // Ejemplo: Síntesis de amoníaco (N₂ + 3H₂ ⇌ 2NH₃)
   document.getElementById('a').value = 1;
   document.getElementById('b').value = 3;
   document.getElementById('c').value = 2;
@@ -27,11 +26,18 @@ function cargarEjemplo() {
   
   document.getElementById('tipoReaccion').value = 'exotermica';
   
-  // Mostrar mensaje de confirmación
+  // Mostrar mensaje
   const resultado = document.getElementById('resultado');
-  resultado.innerHTML = '<p>Ejemplo de síntesis de amoníaco cargado correctamente.</p>';
+  resultado.innerHTML = '<p>Ejemplo de síntesis de amoníaco cargado. Complete cualquier campo vacío antes de calcular.</p>';
   resultado.style.display = 'block';
 }
+
+// Al cargar la página, dejamos todo vacío
+document.addEventListener('DOMContentLoaded', function() {
+  // Limpiar todos los campos
+  document.querySelectorAll('input').forEach(input => {
+    input.value = '';
+  });
 
 function calcularKc() {
   // Obtener valores
