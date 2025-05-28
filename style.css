@@ -146,3 +146,51 @@ fieldset label + input {
     width: 100px;
   }
 }
+
+/* Nuevos estilos añadidos */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: help;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 200px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -100px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Animación para cambios de equilibrio */
+@keyframes shiftLeft {
+  from { transform: translateX(0); }
+  to { transform: translateX(-20px); }
+}
+
+@keyframes shiftRight {
+  from { transform: translateX(0); }
+  to { transform: translateX(20px); }
+}
+
+.shift-left {
+  animation: shiftLeft 0.5s ease-in-out;
+}
+
+.shift-right {
+  animation: shiftRight 0.5s ease-in-out;
+}
