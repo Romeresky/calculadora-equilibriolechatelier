@@ -120,3 +120,28 @@ fieldset label + input {
   box-shadow: 0 4px 10px rgba(0,0,0,0.15);
   display: inline-block;
 }
+
+.imagen-resultados {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.imagen-resultados img {
+  width: 140px;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  opacity: 0.95;
+  transition: transform 0.3s ease;
+}
+
+.imagen-resultados img:hover {
+  transform: scale(1.05);
+}
+
+/* Responsividad para móviles */
+@media (max-width: 600px) {
+  .imagen-resultados img {
+    width: 100px;
+  }
+}
