@@ -3,7 +3,7 @@ body {
   background: #f4f9fc;
   margin: 0;
   padding: 0;
-  color: #333;
+  color: rgb(53, 20, 26);
 }
 
 .container {
@@ -16,7 +16,7 @@ body {
 }
 
 h1, h2 {
-  color: #004080;
+  color: rgb(85, 164, 128);
   margin-top: 0;
 }
 
@@ -26,31 +26,41 @@ label {
 
 input, select {
   margin: 0.25rem;
-  padding: 0.3rem;
-  border: 1px solid #ccc;
+  padding: 0.4rem;
+  border: 1px solid rgb(85, 164, 128);
   border-radius: 5px;
+  color: rgb(53, 20, 26);
+  background-color: #fdfdfd;
+  transition: border-color 0.3s;
+}
+
+input:focus, select:focus {
+  border-color: rgb(216, 184, 127);
+  outline: none;
 }
 
 button {
   margin: 0.5rem;
   padding: 0.5rem 1rem;
-  background-color: #007acc;
+  background-color: rgb(85, 164, 128);
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 button:hover {
-  background-color: #005f99;
+  background-color: rgb(53, 20, 26);
 }
 
 .resultado, .explicacion {
   margin-top: 1rem;
-  background-color: #e6f2ff;
+  background-color: rgb(216, 184, 127);
   padding: 1rem;
-  border-left: 4px solid #007acc;
+  border-left: 4px solid rgb(85, 164, 128);
   border-radius: 5px;
+  color: rgb(53, 20, 26);
 }
 
 pre {
