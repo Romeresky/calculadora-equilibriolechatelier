@@ -42,18 +42,22 @@ function calcularKcAvanzado() {
 function explicar(caso) {
   const tipo = document.getElementById('tipoReaccion').value;
   let texto = '';
+  let animationClass = '';
 
   switch (caso) {
     case 'aumentaReactivo':
       texto = 'Al aumentar un reactivo, el sistema favorece la formación de productos para contrarrestar el cambio.';
+      animationClass = 'shift-right';
       break;
     case 'aumentaProducto':
       texto = 'Al aumentar un producto, el equilibrio se desplaza hacia los reactivos.';
+      animationClass = 'shift-left';
       break;
     case 'aumentaTemperatura':
       texto = tipo === 'exotermica'
-        ? 'En una reacción exotérmica, aumentar la temperatura favorece a los reactivos.'
-        : 'En una reacción endotérmica, aumentar la temperatura favorece a los productos.';
+        ? 'En una reacción exotérmica, aumentar la temperatura favorece a los reactivos (←). El sistema absorbe el calor añadido.'
+        : 'En una reacción endotérmica, aumentar la temperatura favorece a los productos (→). El sistema utiliza el calor añadido.';
+      animationClass = tipo === 'exotermica' ? 'shift-left' : 'shift-right';
       break;
     case 'presion':
       texto = 'Un cambio de presión solo afecta si hay gases y diferente número de moles. El sistema se desplaza hacia el lado con menor cantidad de moles gaseosos.';
@@ -63,17 +67,29 @@ function explicar(caso) {
       break;
   }
 
-  document.getElementById('explicacion').innerHTML = texto;
+  const explicacionDiv = document.getElementById('explicacion');
+  explicacionDiv.innerHTML = texto;
+  
+  // Aplicar animación si corresponde
+  if (animationClass) {
+    explicacionDiv.classList.remove('shift-left', 'shift-right');
+    void explicacionDiv.offsetWidth; // Trigger reflow
+    explicacionDiv.classList.add(animationClass);
+  }
 }
 
 function cargarEjemploAvanzado() {
-  document.getElementById('a').value = 1;
-  document.getElementById('b').value = 1;
-  document.getElementById('c').value = 1;
-  document.getElementById('d').value = 1;
-  document.getElementById('A').value = 1.0;
-  document.getElementById('B').value = 1.0;
-  document.getElementById('C').value = 2.0;
-  document.getElementById('D').value = 2.0;
+  // Ejemplo realista: síntesis de amoníaco
+  document.getElementById('a').value = 1;    // N₂
+  document.getElementById('b').value = 3;    // 3H₂
+  document.getElementById('c').value = 2;    // 2NH₃
+  document.getElementById('d').value = 0;    // No hay "d" en este caso
+  document.getElementById('A').value = 0.5;  // [N₂]
+  document.getElementById('B').value = 1.5;  // [H₂]
+  document.getElementById('C').value = 0.2;  // [NH₃]
+  document.getElementById('D').value = 0;    // No aplica
   document.getElementById('tipoReaccion').value = 'exotermica';
+  
+  // Calcular automáticamente para el ejemplo
+  calcularKcAvanzado();
 }
