@@ -1,136 +1,62 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Calculadora de Equilibrio Químico</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 700px;
-      margin: auto;
-      padding: 20px;
-      background-color: #f0f8ff;
-    }
-    h1, h2 {
-      color: #2e6da4;
-    }
-    .intro, .resultado, .explicacion {
-      margin-top: 20px;
-      padding: 15px;
-      background: #e9f7ef;
-      border-left: 4px solid #2ecc71;
-    }
-    input {
-      width: 100px;
-      padding: 5px;
-      margin: 5px;
-    }
-    button {
-      padding: 10px 15px;
-      margin-top: 10px;
-      background-color: #5cb85c;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #4cae4c;
-    }
-    #flecha {
-      font-size: 40px;
-      text-align: center;
-      margin-top: 10px;
-    }
-    .botones-lechatelier button {
-      margin-right: 10px;
-    }
-  </style>
-</head>
-<body>
-  <h1>Calculadora de Equilibrio Químico</h1>
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #f4f9fc;
+  margin: 0;
+  padding: 0;
+  color: rgb(53, 20, 26);
+}
 
-  <div class="intro">
-    <h2>¿Qué es el equilibrio químico?</h2>
-    <p>El equilibrio químico ocurre cuando las velocidades de las reacciones directa e inversa se igualan. Aunque las sustancias siguen reaccionando, sus concentraciones se mantienen constantes.</p>
-    <p>La constante de equilibrio <strong>K<sub>c</sub></strong> indica si predominan los productos o los reactivos al alcanzar el equilibrio. Se calcula como:</p>
-    <pre>K<sub>c</sub> = [productos]<sup>n</sup> / [reactivos]<sup>m</sup></pre>
-  </div>
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
 
-  <h2>Cálculo de la constante \( K_c \)</h2>
-  <p>Ingrese las concentraciones en mol/L:</p>
-  <label>[Producto]</label>
-  <input type="number" id="producto" step="0.01" placeholder="mol/L">
-  <label>[Reactivo]</label>
-  <input type="number" id="reactivo" step="0.01" placeholder="mol/L">
-  <br>
-  <button onclick="calcularKc()">Calcular Kc</button>
-  <button onclick="cargarEjemplo()">Cargar Ejemplo</button>
+h1, h2 {
+  color: rgb(85, 164, 128);
+  margin-top: 0;
+}
 
-  <div class="resultado" id="resultado"></div>
+label {
+  margin-right: 0.5rem;
+}
 
-  <h2>Principio de Le Chatelier</h2>
-  <p>Seleccione una acción y vea cómo cambia el equilibrio:</p>
-  <div class="botones-lechatelier">
-    <button onclick="explicar('aumentaReactivo')">Aumentar Reactivo</button>
-    <button onclick="explicar('aumentaProducto')">Aumentar Producto</button>
-    <button onclick="explicar('aumentaTemperatura')">Aumentar Temperatura</button>
-  </div>
-  <div id="flecha">⇄</div>
-  <div class="explicacion" id="explicacion"></div>
+input, select {
+  margin: 0.25rem;
+  padding: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  color: rgb(53, 20, 26);
+}
 
-  <script>
-    function calcularKc() {
-      const producto = parseFloat(document.getElementById('producto').value);
-      const reactivo = parseFloat(document.getElementById('reactivo').value);
+button {
+  margin: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: rgb(85, 164, 128);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
-      if (isNaN(producto) || isNaN(reactivo) || reactivo === 0) {
-        document.getElementById('resultado').innerText = "Por favor, ingrese valores válidos.";
-        return;
-      }
+button:hover {
+  background-color: rgb(53, 20, 26);
+}
 
-      const kc = producto / reactivo;
-      let mensaje;
+.resultado, .explicacion {
+  margin-top: 1rem;
+  background-color: rgb(216, 184, 127);
+  padding: 1rem;
+  border-left: 4px solid rgb(85, 164, 128);
+  border-radius: 5px;
+}
 
-      if (kc > 1) {
-        mensaje = "Kc > 1: predominan los productos en el equilibrio.";
-      } else if (kc < 1) {
-        mensaje = "Kc < 1: predominan los reactivos en el equilibrio.";
-      } else {
-        mensaje = "Kc ≈ 1: hay cantidades similares de productos y reactivos.";
-      }
-
-      document.getElementById('resultado').innerHTML = `<strong>Kc = ${kc.toFixed(3)}</strong><br>${mensaje}`;
-    }
-
-    function cargarEjemplo() {
-      document.getElementById('producto').value = 0.6;
-      document.getElementById('reactivo').value = 0.2;
-      calcularKc();
-    }
-
-    function explicar(accion) {
-      let texto = "";
-      let flecha = "⇄";
-
-      switch (accion) {
-        case 'aumentaReactivo':
-          texto = "El equilibrio se desplazará hacia la derecha (más productos).";
-          flecha = "→";
-          break;
-        case 'aumentaProducto':
-          texto = "El equilibrio se desplazará hacia la izquierda (más reactivos).";
-          flecha = "←";
-          break;
-        case 'aumentaTemperatura':
-          texto = "El efecto depende de si la reacción es endotérmica o exotérmica.";
-          flecha = "⇄";
-          break;
-      }
-
-      document.getElementById('explicacion').innerText = texto;
-      document.getElementById('flecha').innerText = flecha;
-    }
-  </script>
-</body>
-</html>
+pre {
+  background: #f0f0f0;
+  padding: 0.5rem;
+  border-radius: 5px;
+  overflow-x: auto;
+}
