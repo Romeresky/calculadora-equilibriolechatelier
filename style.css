@@ -69,3 +69,19 @@ pre {
   border-radius: 5px;
   overflow-x: auto;
 }
+
+/* Distribuir inputs en línea */
+fieldset label,
+fieldset input {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Ajustar ancho mínimo a los inputs para alineación uniforme */
+fieldset input {
+  width: 4.5rem;
+}
+
+/* Agrupar cada par de label/input */
+fieldset label + input {
+  margin-right: 1.5rem;
