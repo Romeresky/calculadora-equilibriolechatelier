@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function cargarEjemplo() {
+  // Ejemplo: Síntesis de amoníaco (N₂ + 3H₂ ⇌ 2NH₃)
   document.getElementById('a').value = 1;
   document.getElementById('b').value = 3;
   document.getElementById('c').value = 2;
@@ -28,22 +29,15 @@ function cargarEjemplo() {
   
   // Mostrar mensaje
   const resultado = document.getElementById('resultado');
-  resultado.innerHTML = '<p>Ejemplo de síntesis de amoníaco cargado. Complete cualquier campo vacío antes de calcular.</p>';
+  resultado.innerHTML = '<p class="success-message">Ejemplo de síntesis de amoníaco cargado correctamente. Haz clic en "Calcular Kc" para ver el resultado.</p>';
   resultado.style.display = 'block';
 }
 
-// Al cargar la página, dejamos todo vacío
-document.addEventListener('DOMContentLoaded', function() {
-  // Limpiar todos los campos
-  document.querySelectorAll('input').forEach(input => {
-    input.value = '';
-  });
-
 function calcularKc() {
   // Obtener valores
-  const a = parseInt(document.getElementById('a').value) || 1;
-  const b = parseInt(document.getElementById('b').value) || 1;
-  const c = parseInt(document.getElementById('c').value) || 1;
+  const a = parseInt(document.getElementById('a').value) || 0;
+  const b = parseInt(document.getElementById('b').value) || 0;
+  const c = parseInt(document.getElementById('c').value) || 0;
   const d = parseInt(document.getElementById('d').value) || 0;
   
   const A = parseFloat(document.getElementById('A').value) || 0;
@@ -51,7 +45,12 @@ function calcularKc() {
   const C = parseFloat(document.getElementById('C').value) || 0;
   const D = parseFloat(document.getElementById('D').value) || 0;
 
-  // Validación básica
+  // Validación
+  if (a <= 0 || b <= 0 || c <= 0) {
+    alert('Los coeficientes estequiométricos deben ser mayores que 0');
+    return;
+  }
+
   if (A < 0 || B < 0 || C < 0 || D < 0) {
     alert('Las concentraciones no pueden ser negativas');
     return;
@@ -68,16 +67,33 @@ function calcularKc() {
     <h3>Resultado del cálculo</h3>
     <p><strong>Fórmula:</strong> Kc = [C]<sup>${c}</sup> × [D]<sup>${d}</sup> / [A]<sup>${a}</sup> × [B]<sup>${b}</sup></p>
     <p><strong>Sustitución:</strong> (${C}<sup>${c}</sup> × ${D}<sup>${d}</sup>) / (${A}<sup>${a}</sup> × ${B}<sup>${b}</sup>)</p>
-    <p><strong>Kc = ${Kc.toFixed(3)}</strong></p>
+    <p class="result-value">Kc = ${Kc.toFixed(3)}</p>
     <p>${interpretarKc(Kc)}</p>
   `;
   resultado.style.display = 'block';
+  
+  // Mostrar imagen de Bulbasaur
+  mostrarBulbasaur();
 }
 
 function interpretarKc(Kc) {
   if (Kc > 1) return 'Kc > 1: En el equilibrio predominan los productos.';
   if (Kc < 1) return 'Kc < 1: En el equilibrio predominan los reactivos.';
-  return 'Kc = 1: Concentraciones similares de reactivos y productos en el equilibrio.';
+  return 'Kc ≈ 1: Concentraciones similares de reactivos y productos en el equilibrio.';
+}
+
+function mostrarBulbasaur() {
+  const container = document.createElement('div');
+  container.className = 'bulbasaur-container';
+  container.innerHTML = `
+    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png" 
+         alt="Bulbasaur celebrando el equilibrio químico" 
+         class="bulbasaur-img">
+    <p>¡Equilibrio alcanzado! 🎉</p>
+  `;
+  
+  const resultado = document.getElementById('resultado');
+  resultado.appendChild(container);
 }
 
 function explicar(accion) {
