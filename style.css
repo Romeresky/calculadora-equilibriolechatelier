@@ -85,3 +85,25 @@ fieldset input {
 /* Agrupar cada par de label/input */
 fieldset label + input {
   margin-right: 1.5rem;
+
+  /* Mejora de visualización en dispositivos móviles */
+@media (max-width: 600px) {
+  fieldset {
+    padding: 1rem 0.5rem;
+  }
+
+  fieldset label,
+  fieldset input {
+    display: block;
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  fieldset input {
+    width: 100%;
+  }
+
+  fieldset label + input {
+    margin-right: 0; /* Elimina el espacio en horizontal */
+  }
+}
