@@ -1,81 +1,75 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Calculadora de Equilibrio Químico y Le Chatelier</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Equilibrio Químico</title>
+  <link rel="stylesheet" href="style.css">
 </head>
+<body>
   <div class="container">
-    <h1>Calculadora de Equilibrio Químico y Principio de Le Chatelier</h1>
-    <p>
-      Resuelve ejercicios de equilibrio químico para la reacción general:
-    </p>
-    <pre><code>aA + bB ⇌ cC + dD</code></pre>
-    <p>
-      Introduce los coeficientes estequiométricos y las concentraciones molares (mol/L).
-    </p>
+    <h1>Calculadora de Equilibrio Químico</h1>
+    <p>Resuelve ejercicios de equilibrio para la reacción:</p>
+    <p class="reaccion">aA + bB ⇌ cC + dD</p>
 
-    <form id="formulario" onsubmit="event.preventDefault(); calcularKcAvanzado();">
-    <fieldset>
-      <legend>Coeficientes estequiométricos</legend>
-      <label for="a">a (A):</label>
-      <input type="number" id="a" min="1" step="1" required title="Coeficiente para A (≥1)"/>
-      
-      <label for="b">b (B):</label>
-      <input type="number" id="b" min="1" step="1" required title="Coeficiente para B (≥1)"/>
-      
-      <label for="c">c (C):</label>
-      <input type="number" id="c" min="1" step="1" required title="Coeficiente para C (≥1)"/>
-      
-      <label for="d">d (D):</label>
-      <input type="number" id="d" min="0" step="1" title="Coeficiente para D (0 si no aplica)"/>
-    </fieldset>
-    
-    <fieldset>
-      <legend>Concentraciones molares (mol/L)</legend>
-      <label for="A">[A]:</label>
-      <input type="number" id="A" min="0" step="0.01" required title="Concentración de A (≥0)"/>
-      
-      <label for="B">[B]:</label>
-      <input type="number" id="B" min="0" step="0.01" required title="Concentración de B (≥0)"/>
-      
-      <label for="C">[C]:</label>
-      <input type="number" id="C" min="0" step="0.01" required title="Concentración de C (≥0)"/>
-      
-      <label for="D">[D]:</label>
-      <input type="number" id="D" min="0" step="0.01" title="Concentración de D (0 si no aplica)"/>
-    </fieldset>
-
-      <fieldset>
-        <legend>Tipo de reacción</legend>
-        <select id="tipoReaccion">
-          <option value="exotermica">Exotérmica</option>
-          <option value="endotermica">Endotérmica</option>
-        </select>
-      </fieldset>
-
-      <button type="submit">Calcular Kc</button>
-      <button type="button" onclick="cargarEjemploAvanzado()">Cargar ejemplo</button>
-    </form>
-
-    <div id="resultado" class="resultado" aria-live="polite"></div>
-    <div id="imagen-bulbasaur" class="imagen-resultados" style="display: none;">
-      <img src="bulbasaur-quimico.webp" alt="Bulbasaur científico celebrando el equilibrio" />
+    <div class="input-group">
+      <h2>Coeficientes estequiométricos</h2>
+      <div class="input-row">
+        <label for="a">a (A):</label>
+        <input type="number" id="a" min="1" step="1" value="1">
+        <label for="b">b (B):</label>
+        <input type="number" id="b" min="1" step="1" value="3">
+      </div>
+      <div class="input-row">
+        <label for="c">c (C):</label>
+        <input type="number" id="c" min="1" step="1" value="2">
+        <label for="d">d (D):</label>
+        <input type="number" id="d" min="0" step="1" value="0">
+      </div>
     </div>
 
+    <div class="input-group">
+      <h2>Concentraciones molares (mol/L)</h2>
+      <div class="input-row">
+        <label for="A">[A]:</label>
+        <input type="number" id="A" min="0" step="0.01" value="0.5">
+        <label for="B">[B]:</label>
+        <input type="number" id="B" min="0" step="0.01" value="1.5">
+      </div>
+      <div class="input-row">
+        <label for="C">[C]:</label>
+        <input type="number" id="C" min="0" step="0.01" value="0.2">
+        <label for="D">[D]:</label>
+        <input type="number" id="D" min="0" step="0.01" value="0">
+      </div>
+    </div>
 
+    <div class="input-group">
+      <h2>Tipo de reacción</h2>
+      <select id="tipoReaccion">
+        <option value="exotermica" selected>Exotérmica</option>
+        <option value="endotermica">Endotérmica</option>
+      </select>
+    </div>
+
+    <div class="button-group">
+      <button id="calcular">Calcular Kc</button>
+      <button id="cargarEjemplo">Cargar Ejemplo</button>
+    </div>
+
+    <div id="resultado" class="resultado"></div>
 
     <h2>Principio de Le Chatelier</h2>
-    <p>Selecciona una acción para ver la explicación:</p>
-    <button onclick="explicar('aumentaReactivo')">Aumentar Reactivo</button>
-    <button onclick="explicar('aumentaProducto')">Aumentar Producto</button>
-    <button onclick="explicar('aumentaTemperatura')">Aumentar Temperatura</button>
-    <button onclick="explicar('presion')">Cambiar Presión</button>
-    <button onclick="explicar('catalizador')">Añadir Catalizador</button>
+    <div class="button-group">
+      <button class="le-chatelier" data-accion="reactivo">Aumentar Reactivo</button>
+      <button class="le-chatelier" data-accion="producto">Aumentar Producto</button>
+      <button class="le-chatelier" data-accion="temperatura">Aumentar Temperatura</button>
+      <button class="le-chatelier" data-accion="presion">Cambiar Presión</button>
+      <button class="le-chatelier" data-accion="catalizador">Añadir Catalizador</button>
+    </div>
 
-    <div id="explicacion" class="explicacion" aria-live="polite"></div>
-    <small>ℹ️ La presión solo afecta si hay gases y los moles gaseosos difieren entre reactivos y productos.</small>
+    <div id="explicacion" class="explicacion"></div>
+    <p class="nota">ℹ️ La presión solo afecta si hay gases y difieren los moles gaseosos.</p>
   </div>
 
   <script src="script.js"></script>
