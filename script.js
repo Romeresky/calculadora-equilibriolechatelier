@@ -1,12 +1,25 @@
 function validarFormulario() {
-  const ids = ['a', 'b', 'c', 'd', 'A', 'B', 'C', 'D'];
-  for (let id of ids) {
+  const coeficientes = ['a', 'b', 'c']; // 'd' es opcional
+  const concentraciones = ['A', 'B', 'C']; // 'D' es opcional
+  
+  // Validar coeficientes (deben ser ≥ 1, excepto 'd' que puede ser 0)
+  for (let id of coeficientes) {
     const valor = parseFloat(document.getElementById(id).value);
-    if (isNaN(valor) || valor <= 0) {
-      alert(`El valor de "${id}" debe ser un número positivo.`);
+    if (isNaN(valor) || valor < 1) {
+      alert(`El coeficiente ${id} debe ser un número entero ≥ 1`);
       return false;
     }
   }
+  
+  // Validar concentraciones (deben ser ≥ 0)
+  for (let id of concentraciones) {
+    const valor = parseFloat(document.getElementById(id).value);
+    if (isNaN(valor) {
+      alert(`La concentración [${id}] debe ser un número`);
+      return false;
+    }
+  }
+  
   return true;
 }
 
