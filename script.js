@@ -1,28 +1,66 @@
-// Cálculo de Kc con validación y explicación
-function calcularKcAvanzado() {
-  const a = parseFloat(document.getElementById('a').value || 1);
-  const b = parseFloat(document.getElementById('b').value || 1);
-  const c = parseFloat(document.getElementById('c').value || 1);
-  const d = parseFloat(document.getElementById('d').value || 1);
+function validarFormulario() {
+  const ids = ['a', 'b', 'c', 'd', 'A', 'B', 'C', 'D'];
+  for (let id of ids) {
+    const valor = parseFloat(document.getElementById(id).value);
+    if (isNaN(valor) || valor <= 0) {
+      alert(`El valor de "${id}" debe ser un número positivo.`);
+      return false;
+    }
+  }
+  return true;
+}
 
+function calcularKcAvanzado() {
+  if (!validarFormulario()) return;
+
+  const a = parseFloat(document.getElementById('a').value);
+  const b = parseFloat(document.getElementById('b').value);
+  const c = parseFloat(document.getElementById('c').value);
+  const d = parseFloat(document.getElementById('d').value);
   const A = parseFloat(document.getElementById('A').value);
   const B = parseFloat(document.getElementById('B').value);
   const C = parseFloat(document.getElementById('C').value);
   const D = parseFloat(document.getElementById('D').value);
 
-  if ([A, B, C, D].some(x => isNaN(x) || x < 0)) {
-    document.getElementById('resultado').innerText = "Todos los valores deben ser positivos y numéricos.";
-    return;
-  }
-
   const numerador = Math.pow(C, c) * Math.pow(D, d);
   const denominador = Math.pow(A, a) * Math.pow(B, b);
-  const kc = numerador / denominador;
+  const Kc = numerador / denominador;
 
-  const expresion = `Kc = [C]^${c} × [D]^${d} / [A]^${a} × [B]^${b}`;
-  const desarrollo = `Kc = (${C}^${c} × ${D}^${d}) / (${A}^${a} × ${B}^${b}) = ${kc.toFixed(3)}`;
+  const resultado = `
+    <strong>Kc = [C]^${c} × [D]^${d} / [A]^${a} × [B]^${b}</strong><br>
+    Sustituyendo: (${C}^${c} × ${D}^${d}) / (${A}^${a} × ${B}^${b})<br>
+    Resultado: <strong>Kc = ${Kc.toFixed(3)}</strong><br>
+    <small>Nota: Kc es adimensional (mol/L se simplifica).</small>
+  `;
 
-  document.getElementById('resultado').innerHTML = `<strong>${expresion}</strong><br>${desarrollo}<br><br>Unidad: Kc es adimensional en este caso.`;
+  document.getElementById('resultado').innerHTML = resultado;
+}
+
+function explicar(caso) {
+  const tipo = document.getElementById('tipoReaccion').value;
+  let texto = '';
+
+  switch (caso) {
+    case 'aumentaReactivo':
+      texto = 'Al aumentar un reactivo, el sistema favorece la formación de productos para contrarrestar el cambio.';
+      break;
+    case 'aumentaProducto':
+      texto = 'Al aumentar un producto, el equilibrio se desplaza hacia los reactivos.';
+      break;
+    case 'aumentaTemperatura':
+      texto = tipo === 'exotermica'
+        ? 'En una reacción exotérmica, aumentar la temperatura favorece a los reactivos.'
+        : 'En una reacción endotérmica, aumentar la temperatura favorece a los productos.';
+      break;
+    case 'presion':
+      texto = 'Un cambio de presión solo afecta si hay gases y diferente número de moles. El sistema se desplaza hacia el lado con menor cantidad de moles gaseosos.';
+      break;
+    case 'catalizador':
+      texto = 'Un catalizador no afecta el equilibrio, solo acelera la velocidad para alcanzarlo.';
+      break;
+  }
+
+  document.getElementById('explicacion').innerHTML = texto;
 }
 
 function cargarEjemploAvanzado() {
@@ -30,37 +68,9 @@ function cargarEjemploAvanzado() {
   document.getElementById('b').value = 1;
   document.getElementById('c').value = 1;
   document.getElementById('d').value = 1;
-  document.getElementById('A').value = 0.5;
-  document.getElementById('B').value = 0.5;
-  document.getElementById('C').value = 0.8;
-  document.getElementById('D').value = 0.8;
-  document.getElementById('tipoReaccion').value = "exotermica";
-  calcularKcAvanzado();
-}
-
-function explicar(accion) {
-  const tipo = document.getElementById('tipoReaccion').value;
-  let texto = "";
-
-  switch (accion) {
-    case 'aumentaReactivo':
-      texto = "El equilibrio se desplaza hacia los productos (→) al aumentar la concentración de reactivos.";
-      break;
-    case 'aumentaProducto':
-      texto = "El equilibrio se desplaza hacia los reactivos (←) al aumentar la concentración de productos.";
-      break;
-    case 'aumentaTemperatura':
-      texto = tipo === 'endotermica'
-        ? "La temperatura favorece la reacción endotérmica (→)."
-        : "La temperatura desfavorece la reacción exotérmica, desplazándola hacia los reactivos (←).";
-      break;
-    case 'catalizador':
-      texto = "El catalizador acelera la reacción pero no modifica el equilibrio químico.";
-      break;
-    case 'presion':
-      texto = "El cambio de presión afecta reacciones con gases. El equilibrio se desplaza hacia el lado con menos moles gaseosos.";
-      break;
-  }
-
-  document.getElementById('explicacion').innerText = texto;
+  document.getElementById('A').value = 1.0;
+  document.getElementById('B').value = 1.0;
+  document.getElementById('C').value = 2.0;
+  document.getElementById('D').value = 2.0;
+  document.getElementById('tipoReaccion').value = 'exotermica';
 }
