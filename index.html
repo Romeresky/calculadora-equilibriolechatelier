@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calculadora de Equilibrio Químico</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f1f1f1;
+      padding: 20px;
+      max-width: 700px;
+      margin: auto;
+    }
+    h1, h2 {
+      color: #2c3e50;
+    }
+    input, button, select {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+    }
+    .resultado {
+      background: #dff0d8;
+      padding: 10px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Calculadora de Equilibrio Químico</h1>
+
+  <h2>1. Calcular constante de equilibrio (Kc)</h2>
+  <p>Ingresa concentraciones en mol/L:</p>
+  <label>Reactivo A [A]: <input type="number" id="a" step="any"></label>
+  <label>Reactivo B [B]: <input type="number" id="b" step="any"></label>
+  <label>Producto C [C]: <input type="number" id="c" step="any"></label>
+  <button onclick="calcularKc()">Calcular Kc</button>
+  <div id="resultadoKc" class="resultado"></div>
+
+  <h2>2. Principio de Le Chatelier</h2>
+  <p>Simula un cambio en el sistema:</p>
+  <select id="cambio" onchange="simularCambio()">
+    <option value="">-- Selecciona un cambio --</option>
+    <option value="aumentarReactivo">Aumentar concentración de un reactivo</option>
+    <option value="disminuirProducto">Disminuir concentración de un producto</option>
+    <option value="aumentarTemperatura">Aumentar temperatura (reacción exotérmica)</option>
+  </select>
+  <div id="resultadoCambio" class="resultado"></div>
+
+  <script>
+    function calcularKc() {
+      const a = parseFloat(document.getElementById("a").value);
+      const b = parseFloat(document.getElementById("b").value);
+      const c = parseFloat(document.getElementById("c").value);
+
+      if (isNaN(a) || isNaN(b) || isNaN(c) || a <= 0 || b <= 0) {
+        document.getElementById("resultadoKc").innerText = "Por favor ingresa valores válidos mayores a cero.";
+        return;
+      }
+
+      const kc = c / (a * b);
+      document.getElementById("resultadoKc").innerText = "Kc = " + kc.toFixed(3);
+    }
+
+    function simularCambio() {
+      const cambio = document.getElementById("cambio").value;
+      let resultado = "";
+
+      switch (cambio) {
+        case "aumentarReactivo":
+          resultado = "El equilibrio se desplazará hacia los productos para contrarrestar el aumento.";
+          break;
+        case "disminuirProducto":
+          resultado = "El equilibrio se desplazará hacia los productos para compensar la pérdida.";
+          break;
+        case "aumentarTemperatura":
+          resultado = "La reacción exotérmica se desplazará hacia los reactivos.";
+          break;
+        default:
+          resultado = "";
+      }
+
+      document.getElementById("resultadoCambio").innerText = resultado;
+    }
+  </script>
+</body>
+</html>
