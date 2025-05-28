@@ -34,7 +34,10 @@ function calcularKcAvanzado() {
   `;
 
   document.getElementById('resultado').innerHTML = resultado;
+  document.getElementById('imagen-bulbasaur').style.display = 'block';
+
 }
+
 
 function explicar(caso) {
   const tipo = document.getElementById('tipoReaccion').value;
