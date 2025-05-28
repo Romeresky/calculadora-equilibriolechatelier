@@ -133,6 +133,7 @@ fieldset label + input {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   opacity: 0.95;
   transition: transform 0.3s ease;
+  background: transparent;
 }
 
 .imagen-resultados img:hover {
