@@ -1,108 +1,104 @@
-function validarFormulario() {
-  const coeficientes = ['a', 'b', 'c']; // 'd' es opcional
-  const concentraciones = ['A', 'B', 'C']; // 'D' es opcional
+document.addEventListener('DOMContentLoaded', function() {
+  // Cargar ejemplo al hacer clic
+  document.getElementById('cargarEjemplo').addEventListener('click', cargarEjemplo);
   
-  // Validar coeficientes (deben ser ≥ 1, excepto 'd' que puede ser 0)
-  for (let id of coeficientes) {
-    const valor = parseFloat(document.getElementById(id).value);
-    if (isNaN(valor) || valor < 1) {
-      alert(`El coeficiente ${id} debe ser un número entero ≥ 1`);
-      return false;
-    }
-  }
+  // Calcular Kc al hacer clic
+  document.getElementById('calcular').addEventListener('click', calcularKc);
   
-  // Validar concentraciones (deben ser ≥ 0)
-  for (let id of concentraciones) {
-    const valor = parseFloat(document.getElementById(id).value);
-    if (isNaN(valor) {
-      alert(`La concentración [${id}] debe ser un número`);
-      return false;
-    }
-  }
+  // Eventos para Le Chatelier
+  document.querySelectorAll('.le-chatelier').forEach(button => {
+    button.addEventListener('click', function() {
+      explicar(this.dataset.accion);
+    });
+  });
+});
+
+function cargarEjemplo() {
+  // Ejemplo: Síntesis de amoníaco (N₂ + 3H₂ ⇌ 2NH₃)
+  document.getElementById('a').value = 1;
+  document.getElementById('b').value = 3;
+  document.getElementById('c').value = 2;
+  document.getElementById('d').value = 0;
   
-  return true;
+  document.getElementById('A').value = 0.5;
+  document.getElementById('B').value = 1.5;
+  document.getElementById('C').value = 0.2;
+  document.getElementById('D').value = 0;
+  
+  document.getElementById('tipoReaccion').value = 'exotermica';
+  
+  // Mostrar mensaje de confirmación
+  const resultado = document.getElementById('resultado');
+  resultado.innerHTML = '<p>Ejemplo de síntesis de amoníaco cargado correctamente.</p>';
+  resultado.style.display = 'block';
 }
 
-function calcularKcAvanzado() {
-  if (!validarFormulario()) return;
+function calcularKc() {
+  // Obtener valores
+  const a = parseInt(document.getElementById('a').value) || 1;
+  const b = parseInt(document.getElementById('b').value) || 1;
+  const c = parseInt(document.getElementById('c').value) || 1;
+  const d = parseInt(document.getElementById('d').value) || 0;
+  
+  const A = parseFloat(document.getElementById('A').value) || 0;
+  const B = parseFloat(document.getElementById('B').value) || 0;
+  const C = parseFloat(document.getElementById('C').value) || 0;
+  const D = parseFloat(document.getElementById('D').value) || 0;
 
-  const a = parseFloat(document.getElementById('a').value);
-  const b = parseFloat(document.getElementById('b').value);
-  const c = parseFloat(document.getElementById('c').value);
-  const d = parseFloat(document.getElementById('d').value);
-  const A = parseFloat(document.getElementById('A').value);
-  const B = parseFloat(document.getElementById('B').value);
-  const C = parseFloat(document.getElementById('C').value);
-  const D = parseFloat(document.getElementById('D').value);
+  // Validación básica
+  if (A < 0 || B < 0 || C < 0 || D < 0) {
+    alert('Las concentraciones no pueden ser negativas');
+    return;
+  }
 
+  // Calcular Kc
   const numerador = Math.pow(C, c) * Math.pow(D, d);
   const denominador = Math.pow(A, a) * Math.pow(B, b);
   const Kc = numerador / denominador;
 
-  const resultado = `
-    <strong>Kc = [C]^${c} × [D]^${d} / [A]^${a} × [B]^${b}</strong><br>
-    Sustituyendo: (${C}^${c} × ${D}^${d}) / (${A}^${a} × ${B}^${b})<br>
-    Resultado: <strong>Kc = ${Kc.toFixed(3)}</strong><br>
-    <small>Nota: Kc es adimensional (mol/L se simplifica).</small>
+  // Mostrar resultado
+  const resultado = document.getElementById('resultado');
+  resultado.innerHTML = `
+    <h3>Resultado del cálculo</h3>
+    <p><strong>Fórmula:</strong> Kc = [C]<sup>${c}</sup> × [D]<sup>${d}</sup> / [A]<sup>${a}</sup> × [B]<sup>${b}</sup></p>
+    <p><strong>Sustitución:</strong> (${C}<sup>${c}</sup> × ${D}<sup>${d}</sup>) / (${A}<sup>${a}</sup> × ${B}<sup>${b}</sup>)</p>
+    <p><strong>Kc = ${Kc.toFixed(3)}</strong></p>
+    <p>${interpretarKc(Kc)}</p>
   `;
-
-  document.getElementById('resultado').innerHTML = resultado;
-  document.getElementById('imagen-bulbasaur').style.display = 'block';
-
+  resultado.style.display = 'block';
 }
 
+function interpretarKc(Kc) {
+  if (Kc > 1) return 'Kc > 1: En el equilibrio predominan los productos.';
+  if (Kc < 1) return 'Kc < 1: En el equilibrio predominan los reactivos.';
+  return 'Kc = 1: Concentraciones similares de reactivos y productos en el equilibrio.';
+}
 
-function explicar(caso) {
+function explicar(accion) {
   const tipo = document.getElementById('tipoReaccion').value;
-  let texto = '';
-  let animationClass = '';
-
-  switch (caso) {
-    case 'aumentaReactivo':
-      texto = 'Al aumentar un reactivo, el sistema favorece la formación de productos para contrarrestar el cambio.';
-      animationClass = 'shift-right';
+  let explicacion = '';
+  
+  switch(accion) {
+    case 'reactivo':
+      explicacion = 'Al aumentar un reactivo, el sistema se desplaza hacia los productos para contrarrestar el cambio.';
       break;
-    case 'aumentaProducto':
-      texto = 'Al aumentar un producto, el equilibrio se desplaza hacia los reactivos.';
-      animationClass = 'shift-left';
+    case 'producto':
+      explicacion = 'Al aumentar un producto, el equilibrio se desplaza hacia los reactivos.';
       break;
-    case 'aumentaTemperatura':
-      texto = tipo === 'exotermica'
-        ? 'En una reacción exotérmica, aumentar la temperatura favorece a los reactivos (←). El sistema absorbe el calor añadido.'
-        : 'En una reacción endotérmica, aumentar la temperatura favorece a los productos (→). El sistema utiliza el calor añadido.';
-      animationClass = tipo === 'exotermica' ? 'shift-left' : 'shift-right';
+    case 'temperatura':
+      explicacion = tipo === 'exotermica' 
+        ? 'En reacciones exotérmicas, al aumentar temperatura el equilibrio se desplaza hacia los reactivos (absorbe calor).'
+        : 'En reacciones endotérmicas, al aumentar temperatura el equilibrio se desplaza hacia los productos (utiliza calor).';
       break;
     case 'presion':
-      texto = 'Un cambio de presión solo afecta si hay gases y diferente número de moles. El sistema se desplaza hacia el lado con menor cantidad de moles gaseosos.';
+      explicacion = 'La presión solo afecta si hay gases. El sistema se desplaza hacia el lado con menos moles gaseosos.';
       break;
     case 'catalizador':
-      texto = 'Un catalizador no afecta el equilibrio, solo acelera la velocidad para alcanzarlo.';
+      explicacion = 'Los catalizadores aceleran la reacción pero no modifican la posición del equilibrio.';
       break;
   }
-
-  const explicacionDiv = document.getElementById('explicacion');
-  explicacionDiv.innerHTML = texto;
   
-  // Aplicar animación si corresponde
-  if (animationClass) {
-    explicacionDiv.classList.remove('shift-left', 'shift-right');
-    void explicacionDiv.offsetWidth; // Trigger reflow
-    explicacionDiv.classList.add(animationClass);
-  }
-}
-
-function cargarEjemploAvanzado() {
-  // Ejemplo realista: síntesis de amoníaco
-  document.getElementById('a').value = 1;    // N₂
-  document.getElementById('b').value = 3;    // 3H₂
-  document.getElementById('c').value = 2;    // 2NH₃
-  document.getElementById('d').value = 0;    // No hay "d" en este caso
-  document.getElementById('A').value = 0.5;  // [N₂]
-  document.getElementById('B').value = 1.5;  // [H₂]
-  document.getElementById('C').value = 0.2;  // [NH₃]
-  document.getElementById('D').value = 0;    // No aplica
-  document.getElementById('tipoReaccion').value = 'exotermica';
-  
-  // Calcular automáticamente para el ejemplo
-  calcularKcAvanzado();
+  const divExplicacion = document.getElementById('explicacion');
+  divExplicacion.innerHTML = `<h3>Efecto de ${accion}:</h3><p>${explicacion}</p>`;
+  divExplicacion.style.display = 'block';
 }
