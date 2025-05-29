@@ -97,30 +97,51 @@ function mostrarBulbasaur() {
 }
 
 function explicar(accion) {
+  // Remover selección previa
+  document.querySelectorAll('.le-chatelier').forEach(btn => {
+    btn.classList.remove('selected');
+  });
+  
+  // Seleccionar el botón clickeado
+  event.target.classList.add('selected');
+  
   const tipo = document.getElementById('tipoReaccion').value;
   let explicacion = '';
+  let tipoTexto = tipo === 'exotermica' ? 'Exotérmica' : 'Endotérmica';
   
   switch(accion) {
     case 'reactivo':
-      explicacion = 'Al aumentar un reactivo, el sistema se desplaza hacia los productos para contrarrestar el cambio.';
+      explicacion = 'Al aumentar un reactivo, el sistema se desplaza hacia los productos para contrarrestar el cambio (Principio de Le Chatelier).';
       break;
     case 'producto':
-      explicacion = 'Al aumentar un producto, el equilibrio se desplaza hacia los reactivos.';
+      explicacion = 'Al aumentar un producto, el equilibrio se desplaza hacia los reactivos para restablecer el equilibrio.';
       break;
     case 'temperatura':
       explicacion = tipo === 'exotermica' 
-        ? 'En reacciones exotérmicas, al aumentar temperatura el equilibrio se desplaza hacia los reactivos (absorbe calor).'
-        : 'En reacciones endotérmicas, al aumentar temperatura el equilibrio se desplaza hacia los productos (utiliza calor).';
+        ? 'En reacciones exotérmicas (liberan calor), al aumentar la temperatura el equilibrio se desplaza hacia los reactivos (←) para absorber el exceso de calor.'
+        : 'En reacciones endotérmicas (absorben calor), al aumentar la temperatura el equilibrio se desplaza hacia los productos (→) para utilizar el calor añadido.';
       break;
     case 'presion':
-      explicacion = 'La presión solo afecta si hay gases. El sistema se desplaza hacia el lado con menos moles gaseosos.';
+      explicacion = 'Efecto sobre el equilibrio:<br><br>'
+        + '• Aumentar presión: el sistema se desplaza hacia el lado con menos moles gaseosos<br>'
+        + '• Disminuir presión: el sistema se desplaza hacia el lado con más moles gaseosos<br><br>'
+        + 'Solo aplica cuando hay sustancias gaseosas y difiere el número de moles entre reactivos y productos.';
       break;
     case 'catalizador':
-      explicacion = 'Los catalizadores aceleran la reacción pero no modifican la posición del equilibrio.';
+      explicacion = 'Los catalizadores no afectan la posición del equilibrio:<br><br>'
+        + '• Aceleran igualmente las reacciones directa e inversa<br>'
+        + '• Permiten alcanzar el equilibrio más rápido<br>'
+        + '• No modifican el valor de Kc';
       break;
   }
   
   const divExplicacion = document.getElementById('explicacion');
-  divExplicacion.innerHTML = `<h3>Efecto de ${accion}:</h3><p>${explicacion}</p>`;
+  divExplicacion.innerHTML = `
+    <h3>
+      ${accion.replace(/\b\w/g, l => l.toUpperCase())} 
+      <span class="reaccion-indicator">${tipoTexto}</span>
+    </h3>
+    <p>${explicacion}</p>
+  `;
   divExplicacion.style.display = 'block';
 }
