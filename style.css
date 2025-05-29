@@ -167,3 +167,47 @@ button:hover {
     width: 100%;
   }
 }
+
+/* Estilos para botones seleccionados */
+.le-chatelier.selected {
+  background-color: var(--accent);
+  color: var(--secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(216, 184, 127, 0.4);
+  border: 2px solid var(--secondary);
+}
+
+/* Indicador de tipo de reacción */
+.reaccion-indicator {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-weight: bold;
+  margin-left: 1rem;
+  background-color: var(--primary);
+  color: white;
+  font-size: 0.9rem;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* Mejoras para la sección de explicación */
+.explicacion {
+  background-color: rgba(216, 184, 127, 0.15);
+  border-left: 4px solid var(--accent);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-top: 1.5rem;
+}
+
+.explicacion h3 {
+  color: var(--secondary);
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+}
