@@ -61,6 +61,143 @@ function calcularKc() {
   const denominador = Math.pow(A, a) * Math.pow(B, b);
   const Kc = numerador / denominador;
 
+  // script.js - Nuevas funciones
+function toggleModoCalculo() {
+  const modo = document.getElementById('modo-calculadora').value;
+  const seccionPresion = document.getElementById('seccion-presion');
+  const seccionTemperatura = document.getElementById('seccion-temperatura');
+  
+  if (modo === 'kp') {
+    seccionPresion.style.display = 'block';
+    seccionTemperatura.style.display = 'block';
+    document.getElementById('unidades-k').textContent = '(atm)';
+  } else {
+    seccionPresion.style.display = 'none';
+    seccionTemperatura.style.display = 'none';
+    document.getElementById('unidades-k').textContent = '(mol/L)';
+  }
+}
+
+function calcularConstante() {
+  const modo = document.getElementById('modo-calculadora').value;
+  
+  if (modo === 'kc') {
+    calcularKc();
+  } else {
+    calcularKp();
+  }
+}
+
+function calcularKp() {
+  // Obtener valores base para Kc
+  const Kc = calcularKc(true); // true para retornar valor sin mostrar
+  
+  // Obtener parámetros adicionales
+  const temperatura = parseFloat(document.getElementById('temperatura').value) + 273.15; // Convertir a Kelvin
+  const deltaN = calcularDeltaN();
+  
+  // Calcular Kp
+  const R = 0.0821; // Constante de los gases (atm·L/mol·K)
+  const Kp = Kc * Math.pow(R * temperatura, deltaN);
+  
+  // Mostrar resultado
+  document.getElementById('resultado').innerHTML += `
+    <h3>Resultado para Kp</h3>
+    <p>Δn = ${deltaN}</p>
+    <p>Kp = Kc × (RT)<sup>Δn</sup> = ${Kc.toFixed(3)} × (0.0821 × ${temperatura.toFixed(2)})<sup>${deltaN}</sup></p>
+    <p class="result-value">Kp = ${Kp.toFixed(3)} atm</p>
+  `;
+}
+
+function calcularDeltaN() {
+  const a = parseInt(document.getElementById('a').value) || 0;
+  const b = parseInt(document.getElementById('b').value) || 0;
+  const c = parseInt(document.getElementById('c').value) || 0;
+  const d = parseInt(document.getElementById('d').value) || 0;
+  
+  return (c + d) - (a + b); // moles productos - moles reactivos
+}
+
+  // Nuevo en script.js
+function manejarFases() {
+  const fases = {
+    A: document.getElementById('fase-A').value,
+    B: document.getElementById('fase-B').value,
+    C: document.getElementById('fase-C').value,
+    D: document.getElementById('fase-D').value
+  };
+  
+  let expresionK = '';
+  let numerador = 1;
+  let denominador = 1;
+  
+  // Construir expresión de K
+  if (fases.C !== 's' && fases.C !== 'l') {
+    const c = parseInt(document.getElementById('c').value) || 1;
+    expresionK += `[C]<sup>${c}</sup>`;
+    numerador *= Math.pow(parseFloat(document.getElementById('C').value) || 0, c);
+  }
+  
+  if (fases.D !== 's' && fases.D !== 'l' && document.getElementById('d').value > 0) {
+    const d = parseInt(document.getElementById('d').value) || 1;
+    expresionK += expresionK ? ` × [D]<sup>${d}</sup>` : `[D]<sup>${d}</sup>`;
+    numerador *= Math.pow(parseFloat(document.getElementById('D').value) || 0, d);
+  }
+  
+  expresionK += ' / ';
+  
+  if (fases.A !== 's' && fases.A !== 'l') {
+    const a = parseInt(document.getElementById('a').value) || 1;
+    expresionK += `[A]<sup>${a}</sup>`;
+    denominador *= Math.pow(parseFloat(document.getElementById('A').value) || 0, a);
+  }
+  
+  if (fases.B !== 's' && fases.B !== 'l') {
+    const b = parseInt(document.getElementById('b').value) || 1;
+    expresionK += expresionK.includes('/ [A]') ? ` × [B]<sup>${b}</sup>` : `[B]<sup>${b}</sup>`;
+    denominador *= Math.pow(parseFloat(document.getElementById('B').value) || 0, b);
+  }
+  
+  const K = numerador / denominador;
+  
+  return {
+    expresion: expresionK,
+    valor: K
+  };
+}
+  
+function explicarPresion() {
+  const deltaN = calcularDeltaN();
+  let explicacion = '';
+  
+  if (deltaN === 0) {
+    explicacion = 'No hay efecto: el número de moles gaseosos es igual en ambos lados.';
+  } else {
+    const lado = deltaN < 0 ? 'productos' : 'reactivos';
+    explicacion = `Al aumentar presión, el equilibrio se desplaza hacia los ${lado} (${Math.abs(deltaN)} menos moles gaseosos).`;
+  }
+  
+  document.getElementById('explicacion').innerHTML = `
+    <h3>Efecto de Presión</h3>
+    <p>Δn(gas) = ${deltaN}</p>
+    <p>${explicacion}</p>
+  `;
+}
+
+  function calcularQ() {
+  const valores = obtenerValores();
+  const Q = manejarFases(valores).valor;
+  let mensaje = `Q = ${Q.toFixed(3)}`;
+  
+  if (KcCalculado) {
+    if (Q > Kc) mensaje += ' (Q > Kc, la reacción procederá hacia los reactivos)';
+    else if (Q < Kc) mensaje += ' (Q < Kc, la reacción procederá hacia los productos)';
+    else mensaje += ' (Q = Kc, el sistema está en equilibrio)';
+  }
+  
+  mostrarResultado(mensaje);
+}
+  
   // Mostrar resultado
   const resultado = document.getElementById('resultado');
   resultado.innerHTML = `
@@ -74,6 +211,17 @@ function calcularKc() {
   
   // Mostrar imagen de Bulbasaur
   mostrarBulbasaur();
+}
+
+function convertirAKp() {
+  if (!KcCalculado) {
+    alert('Primero calcule Kc');
+    return;
+  }
+  const temperatura = parseFloat(prompt('Ingrese temperatura en Kelvin:'));
+  const deltaN = calcularDeltaN();
+  const Kp = Kc * Math.pow(0.0821 * temperatura, deltaN);
+  mostrarResultado(`Kp = ${Kp.toFixed(3)} atm`);
 }
 
 function interpretarKc(Kc) {
