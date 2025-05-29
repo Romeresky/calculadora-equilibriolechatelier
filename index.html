@@ -3,96 +3,127 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculadora de Equilibrio Químico y Le Chatelier</title>
+  <title>Calculadora Avanzada de Equilibrio Químico</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
-    <h1>Calculadora de Equilibrio Químico y Le Chatelier</h1>
-    <p>Resuelve ejercicios de equilibrio para la reacción:</p>
-    <p class="reaccion">aA + bB ⇌ cC + dD</p>
+    <h1>Calculadora de Equilibrio Químico</h1>
+    <p>Resuelve ejercicios para la reacción: <span class="reaction-formula">aA + bB ⇌ cC + dD</span></p>
+
+    <div class="input-group">
+      <label for="modo-calculadora">Modo de cálculo:</label>
+      <select id="modo-calculadora" onchange="toggleModoCalculo()">
+        <option value="kc">Kc (Concentración)</option>
+        <option value="kp">Kp (Presión)</option>
+      </select>
+    </div>
 
     <div class="input-group">
       <h2>Coeficientes estequiométricos</h2>
       <div class="input-row">
-        <label for="a">a (A):</label>
-        <input type="number" id="a" min="1" step="1" value="">
-        <label for="b">b (B):</label>
-        <input type="number" id="b" min="1" step="1" value="">
+        <div>
+          <label for="a">a (A):</label>
+          <input type="number" id="a" min="1" step="1" value="1">
+          <select id="fase-A" class="phase-select">
+            <option value="g">(g)</option>
+            <option value="aq">(aq)</option>
+            <option value="l">(l)</option>
+            <option value="s">(s)</option>
+          </select>
+        </div>
+        <div>
+          <label for="b">b (B):</label>
+          <input type="number" id="b" min="1" step="1" value="1">
+          <select id="fase-B" class="phase-select">
+            <option value="g">(g)</option>
+            <option value="aq">(aq)</option>
+            <option value="l">(l)</option>
+            <option value="s">(s)</option>
+          </select>
+        </div>
       </div>
       <div class="input-row">
-        <label for="c">c (C):</label>
-        <input type="number" id="c" min="1" step="1" value="">
-        <label for="d">d (D):</label>
-        <input type="number" id="d" min="0" step="1" value="">
+        <div>
+          <label for="c">c (C):</label>
+          <input type="number" id="c" min="1" step="1" value="1">
+          <select id="fase-C" class="phase-select">
+            <option value="g">(g)</option>
+            <option value="aq">(aq)</option>
+            <option value="l">(l)</option>
+            <option value="s">(s)</option>
+          </select>
+        </div>
+        <div>
+          <label for="d">d (D):</label>
+          <input type="number" id="d" min="0" step="1" value="0">
+          <select id="fase-D" class="phase-select">
+            <option value="g">(g)</option>
+            <option value="aq">(aq)</option>
+            <option value="l">(l)</option>
+            <option value="s">(s)</option>
+          </select>
+        </div>
       </div>
     </div>
 
     <div class="input-group">
-      <h2>Concentraciones molares (mol/L)</h2>
+      <h2>Concentraciones molares <span id="unidades-concentracion">(mol/L)</span></h2>
       <div class="input-row">
-        <label for="A">[A]:</label>
-        <input type="number" id="A" min="0" step="0.01" value="">
-        <label for="B">[B]:</label>
-        <input type="number" id="B" min="0" step="0.01" value="">
+        <div>
+          <label for="A">[A]:</label>
+          <input type="number" id="A" min="0" step="0.001" value="0.5">
+        </div>
+        <div>
+          <label for="B">[B]:</label>
+          <input type="number" id="B" min="0" step="0.001" value="0.5">
+        </div>
       </div>
       <div class="input-row">
-        <label for="C">[C]:</label>
-        <input type="number" id="C" min="0" step="0.01" value="">
-        <label for="D">[D]:</label>
-        <input type="number" id="D" min="0" step="0.01" value="">
+        <div>
+          <label for="C">[C]:</label>
+          <input type="number" id="C" min="0" step="0.001" value="0.2">
+        </div>
+        <div>
+          <label for="D">[D]:</label>
+          <input type="number" id="D" min="0" step="0.001" value="0">
+        </div>
+      </div>
+    </div>
+
+    <div id="seccion-presion" class="input-group" style="display: none;">
+      <h2>Parámetros para gases</h2>
+      <div class="input-row">
+        <div>
+          <label for="temperatura">Temperatura (°C):</label>
+          <input type="number" id="temperatura" min="-273" step="0.1" value="25">
+        </div>
       </div>
     </div>
 
     <div class="input-group">
       <h2>Tipo de reacción</h2>
       <select id="tipoReaccion">
-        <option value="exotermica" selected>Exotérmica</option>
+        <option value="exotermica">Exotérmica</option>
         <option value="endotermica">Endotérmica</option>
       </select>
     </div>
 
-    <!-- Nuevos elementos en index.html -->
-<div class="input-group">
-  <label for="modo-calculadora">Modo de cálculo:</label>
-  <select id="modo-calculadora" onchange="toggleModoCalculo()">
-    <option value="kc">Kc (Concentración)</option>
-    <option value="kp">Kp (Presión)</option>
-  </select>
-</div>
-
-<div id="seccion-presion" class="input-group" style="display: none;">
-  <h3>Parámetros para Kp</h3>
-  <label for="temperatura">Temperatura (°C):</label>
-  <input type="number" id="temperatura" min="0" step="0.1" value="25">
-  
-  <div class="fases-quimicas">
-    <h4>Fases químicas:</h4>
-    <div class="fase-input">
-      <label for="fase-A">Fase de A:</label>
-      <select id="fase-A">
-        <option value="g">Gas (g)</option>
-        <option value="aq">Acuoso (aq)</option>
-        <option value="l">Líquido (l)</option>
-        <option value="s">Sólido (s)</option>
-      </select>
-    </div>
-    <!-- Repetir para B, C y D -->
-  </div>
-</div>
-
-<!-- Modificar el botón de cálculo -->
-<button onclick="calcularConstante()">Calcular <span id="unidades-k">(mol/L)</span></button>
-
     <div class="button-group">
-      <button id="calcular">Calcular Kc</button>
-      <button id="cargarEjemplo">Cargar Ejemplo</button>
+      <button id="calcular" onclick="calcularConstante()">Calcular <span id="unidades-k">Kc</span></button>
+      <button id="cargarEjemplo" onclick="cargarEjemploAvanzado()">Cargar Ejemplo</button>
     </div>
 
     <div id="resultado" class="resultado"></div>
 
+    <div id="bulbasaur-container" class="bulbasaur-container" style="display: none;">
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png" 
+           alt="Bulbasaur científico" 
+           class="bulbasaur-img">
+      <p>¡Equilibrio alcanzado! 🧪✨</p>
+    </div>
+
     <h2>Principio de Le Chatelier</h2>
-    
     <div class="button-group le-chatelier-group">
       <button class="le-chatelier" data-accion="reactivo">Aumentar Reactivo</button>
       <button class="le-chatelier" data-accion="producto">Aumentar Producto</button>
@@ -100,10 +131,8 @@
       <button class="le-chatelier" data-accion="presion">Cambiar Presión</button>
       <button class="le-chatelier" data-accion="catalizador">Añadir Catalizador</button>
     </div>
-    
-    <!-- Asegurar que existe el div de explicación -->
-    <div id="explicacion" class="explicacion" style="display: none;"></div>
-    <p class="nota">ℹ️ La presión solo afecta si hay gases y difieren los moles gaseosos.</p>
+
+    <div id="explicacion" class="explicacion"></div>
   </div>
 
   <script src="script.js"></script>
