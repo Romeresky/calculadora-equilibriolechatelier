@@ -52,6 +52,38 @@
       </select>
     </div>
 
+    <!-- Nuevos elementos en index.html -->
+<div class="input-group">
+  <label for="modo-calculadora">Modo de cálculo:</label>
+  <select id="modo-calculadora" onchange="toggleModoCalculo()">
+    <option value="kc">Kc (Concentración)</option>
+    <option value="kp">Kp (Presión)</option>
+  </select>
+</div>
+
+<div id="seccion-presion" class="input-group" style="display: none;">
+  <h3>Parámetros para Kp</h3>
+  <label for="temperatura">Temperatura (°C):</label>
+  <input type="number" id="temperatura" min="0" step="0.1" value="25">
+  
+  <div class="fases-quimicas">
+    <h4>Fases químicas:</h4>
+    <div class="fase-input">
+      <label for="fase-A">Fase de A:</label>
+      <select id="fase-A">
+        <option value="g">Gas (g)</option>
+        <option value="aq">Acuoso (aq)</option>
+        <option value="l">Líquido (l)</option>
+        <option value="s">Sólido (s)</option>
+      </select>
+    </div>
+    <!-- Repetir para B, C y D -->
+  </div>
+</div>
+
+<!-- Modificar el botón de cálculo -->
+<button onclick="calcularConstante()">Calcular <span id="unidades-k">(mol/L)</span></button>
+
     <div class="button-group">
       <button id="calcular">Calcular Kc</button>
       <button id="cargarEjemplo">Cargar Ejemplo</button>
