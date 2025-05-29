@@ -60,15 +60,17 @@
     <div id="resultado" class="resultado"></div>
 
     <h2>Principio de Le Chatelier</h2>
-    <div class="button-group">
+    
+    <div class="button-group le-chatelier-group">
       <button class="le-chatelier" data-accion="reactivo">Aumentar Reactivo</button>
       <button class="le-chatelier" data-accion="producto">Aumentar Producto</button>
       <button class="le-chatelier" data-accion="temperatura">Aumentar Temperatura</button>
       <button class="le-chatelier" data-accion="presion">Cambiar Presión</button>
       <button class="le-chatelier" data-accion="catalizador">Añadir Catalizador</button>
     </div>
-
-    <div id="explicacion" class="explicacion"></div>
+    
+    <!-- Asegurar que existe el div de explicación -->
+    <div id="explicacion" class="explicacion" style="display: none;"></div>
     <p class="nota">ℹ️ La presión solo afecta si hay gases y difieren los moles gaseosos.</p>
   </div>
 
