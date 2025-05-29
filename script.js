@@ -1,9 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
-  // Cargar ejemplo al hacer clic
-  document.getElementById('cargarEjemplo').addEventListener('click', cargarEjemplo);
-  
-  // Calcular Kc al hacer clic
-  document.getElementById('calcular').addEventListener('click', calcularKc);
+  // Event listeners
+  document.getElementById('cargarEjemplo').addEventListener('click', cargarEjemploAvanzado);
+  document.getElementById('calcular').addEventListener('click', calcularConstante);
   
   // Eventos para Le Chatelier
   document.querySelectorAll('.le-chatelier').forEach(button => {
@@ -13,112 +11,80 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-function cargarEjemplo() {
-  // Ejemplo: Síntesis de amoníaco (N₂ + 3H₂ ⇌ 2NH₃)
-  document.getElementById('a').value = 1;
-  document.getElementById('b').value = 3;
-  document.getElementById('c').value = 2;
-  document.getElementById('d').value = 0;
-  
-  document.getElementById('A').value = 0.5;
-  document.getElementById('B').value = 1.5;
-  document.getElementById('C').value = 0.2;
-  document.getElementById('D').value = 0;
-  
-  document.getElementById('tipoReaccion').value = 'exotermica';
-  
-  // Mostrar mensaje
-  const resultado = document.getElementById('resultado');
-  resultado.innerHTML = '<p class="success-message">Ejemplo de síntesis de amoníaco cargado correctamente. Haz clic en "Calcular Kc" para ver el resultado.</p>';
-  resultado.style.display = 'block';
-}
-
-function calcularKc() {
-  // Obtener valores
-  const a = parseInt(document.getElementById('a').value) || 0;
-  const b = parseInt(document.getElementById('b').value) || 0;
-  const c = parseInt(document.getElementById('c').value) || 0;
-  const d = parseInt(document.getElementById('d').value) || 0;
-  
-  const A = parseFloat(document.getElementById('A').value) || 0;
-  const B = parseFloat(document.getElementById('B').value) || 0;
-  const C = parseFloat(document.getElementById('C').value) || 0;
-  const D = parseFloat(document.getElementById('D').value) || 0;
-
-  // Validación
-  if (a <= 0 || b <= 0 || c <= 0) {
-    alert('Los coeficientes estequiométricos deben ser mayores que 0');
-    return;
-  }
-
-  if (A < 0 || B < 0 || C < 0 || D < 0) {
-    alert('Las concentraciones no pueden ser negativas');
-    return;
-  }
-
-  // Calcular Kc
-  const numerador = Math.pow(C, c) * Math.pow(D, d);
-  const denominador = Math.pow(A, a) * Math.pow(B, b);
-  const Kc = numerador / denominador;
-
-  // script.js - Nuevas funciones
+// Función para cambiar entre modos Kc y Kp
 function toggleModoCalculo() {
   const modo = document.getElementById('modo-calculadora').value;
   const seccionPresion = document.getElementById('seccion-presion');
-  const seccionTemperatura = document.getElementById('seccion-temperatura');
+  const unidadesK = document.getElementById('unidades-k');
+  const unidadesConc = document.getElementById('unidades-concentracion');
   
   if (modo === 'kp') {
     seccionPresion.style.display = 'block';
-    seccionTemperatura.style.display = 'block';
-    document.getElementById('unidades-k').textContent = '(atm)';
+    unidadesK.textContent = 'Kp';
+    unidadesConc.textContent = '(atm)';
   } else {
     seccionPresion.style.display = 'none';
-    seccionTemperatura.style.display = 'none';
-    document.getElementById('unidades-k').textContent = '(mol/L)';
+    unidadesK.textContent = 'Kc';
+    unidadesConc.textContent = '(mol/L)';
   }
 }
 
+// Función principal de cálculo
 function calcularConstante() {
   const modo = document.getElementById('modo-calculadora').value;
+  const resultadoDiv = document.getElementById('resultado');
+  resultadoDiv.innerHTML = '';
   
+  // Validación básica
+  if (!validarDatos()) return;
+  
+  // Calcular según el modo
   if (modo === 'kc') {
     calcularKc();
   } else {
     calcularKp();
   }
+  
+  // Mostrar imagen de Bulbasaur
+  document.getElementById('bulbasaur-container').style.display = 'block';
 }
 
-function calcularKp() {
-  // Obtener valores base para Kc
-  const Kc = calcularKc(true); // true para retornar valor sin mostrar
+// Función para calcular Kc
+function calcularKc(soloValor = false) {
+  const { expresion, valor: Kc } = manejarFases();
   
-  // Obtener parámetros adicionales
+  if (soloValor) return Kc;
+  
+  const resultadoDiv = document.getElementById('resultado');
+  resultadoDiv.innerHTML = `
+    <h3>Resultado para Kc</h3>
+    <p><strong>Expresión:</strong> Kc = ${expresion}</p>
+    <p class="result-value">Kc = ${Kc.toFixed(3)}</p>
+    <p>${interpretarKc(Kc)}</p>
+  `;
+  
+  return Kc;
+}
+
+// Función para calcular Kp
+function calcularKp() {
+  const Kc = calcularKc(true);
   const temperatura = parseFloat(document.getElementById('temperatura').value) + 273.15; // Convertir a Kelvin
   const deltaN = calcularDeltaN();
+  const R = 0.0821; // Constante de los gases
   
-  // Calcular Kp
-  const R = 0.0821; // Constante de los gases (atm·L/mol·K)
   const Kp = Kc * Math.pow(R * temperatura, deltaN);
   
-  // Mostrar resultado
-  document.getElementById('resultado').innerHTML += `
+  const resultadoDiv = document.getElementById('resultado');
+  resultadoDiv.innerHTML += `
     <h3>Resultado para Kp</h3>
-    <p>Δn = ${deltaN}</p>
+    <p>Δn = ${deltaN} (moles productos - moles reactivos gaseosos)</p>
     <p>Kp = Kc × (RT)<sup>Δn</sup> = ${Kc.toFixed(3)} × (0.0821 × ${temperatura.toFixed(2)})<sup>${deltaN}</sup></p>
     <p class="result-value">Kp = ${Kp.toFixed(3)} atm</p>
   `;
 }
 
-function calcularDeltaN() {
-  const a = parseInt(document.getElementById('a').value) || 0;
-  const b = parseInt(document.getElementById('b').value) || 0;
-  const c = parseInt(document.getElementById('c').value) || 0;
-  const d = parseInt(document.getElementById('d').value) || 0;
-  
-  return (c + d) - (a + b); // moles productos - moles reactivos
-}
-
-  // Nuevo en script.js
+// Función para manejar fases químicas
 function manejarFases() {
   const fases = {
     A: document.getElementById('fase-A').value,
@@ -131,21 +97,22 @@ function manejarFases() {
   let numerador = 1;
   let denominador = 1;
   
-  // Construir expresión de K
+  // Construir expresión para productos (numerador)
   if (fases.C !== 's' && fases.C !== 'l') {
     const c = parseInt(document.getElementById('c').value) || 1;
     expresionK += `[C]<sup>${c}</sup>`;
     numerador *= Math.pow(parseFloat(document.getElementById('C').value) || 0, c);
   }
   
-  if (fases.D !== 's' && fases.D !== 'l' && document.getElementById('d').value > 0) {
+  if (fases.D !== 's' && fases.D !== 'l' && parseInt(document.getElementById('d').value) > 0) {
     const d = parseInt(document.getElementById('d').value) || 1;
     expresionK += expresionK ? ` × [D]<sup>${d}</sup>` : `[D]<sup>${d}</sup>`;
     numerador *= Math.pow(parseFloat(document.getElementById('D').value) || 0, d);
   }
   
-  expresionK += ' / ';
+  expresionK += expresionK ? ' / ' : '1 / ';
   
+  // Construir expresión para reactivos (denominador)
   if (fases.A !== 's' && fases.A !== 'l') {
     const a = parseInt(document.getElementById('a').value) || 1;
     expresionK += `[A]<sup>${a}</sup>`;
@@ -158,92 +125,75 @@ function manejarFases() {
     denominador *= Math.pow(parseFloat(document.getElementById('B').value) || 0, b);
   }
   
-  const K = numerador / denominador;
+  // Manejar caso cuando no hay componentes en la fase gaseosa/acuo
+  if (numerador === 1 && denominador === 1) {
+    return {
+      expresion: "No aplica (solo sólidos/líquidos puros)",
+      valor: 1
+    };
+  }
+  
+  const K = denominador !== 0 ? numerador / denominador : Infinity;
   
   return {
-    expresion: expresionK,
+    expresion: expresionK || "1",
     valor: K
   };
 }
+
+// Función para calcular Δn (moles productos - moles reactivos)
+function calcularDeltaN() {
+  const fases = {
+    A: document.getElementById('fase-A').value,
+    B: document.getElementById('fase-B').value,
+    C: document.getElementById('fase-C').value,
+    D: document.getElementById('fase-D').value
+  };
   
-function explicarPresion() {
-  const deltaN = calcularDeltaN();
-  let explicacion = '';
+  let molesReactivos = 0;
+  let molesProductos = 0;
   
-  if (deltaN === 0) {
-    explicacion = 'No hay efecto: el número de moles gaseosos es igual en ambos lados.';
-  } else {
-    const lado = deltaN < 0 ? 'productos' : 'reactivos';
-    explicacion = `Al aumentar presión, el equilibrio se desplaza hacia los ${lado} (${Math.abs(deltaN)} menos moles gaseosos).`;
-  }
+  if (fases.A === 'g') molesReactivos += parseInt(document.getElementById('a').value) || 0;
+  if (fases.B === 'g') molesReactivos += parseInt(document.getElementById('b').value) || 0;
+  if (fases.C === 'g') molesProductos += parseInt(document.getElementById('c').value) || 0;
+  if (fases.D === 'g') molesProductos += parseInt(document.getElementById('d').value) || 0;
   
-  document.getElementById('explicacion').innerHTML = `
-    <h3>Efecto de Presión</h3>
-    <p>Δn(gas) = ${deltaN}</p>
-    <p>${explicacion}</p>
-  `;
+  return molesProductos - molesReactivos;
 }
 
-  function calcularQ() {
-  const valores = obtenerValores();
-  const Q = manejarFases(valores).valor;
-  let mensaje = `Q = ${Q.toFixed(3)}`;
+// Función para cargar ejemplo
+function cargarEjemploAvanzado() {
+  // Ejemplo: Síntesis de amoníaco (N₂ + 3H₂ ⇌ 2NH₃)
+  document.getElementById('a').value = 1;
+  document.getElementById('fase-A').value = 'g';
+  document.getElementById('b').value = 3;
+  document.getElementById('fase-B').value = 'g';
+  document.getElementById('c').value = 2;
+  document.getElementById('fase-C').value = 'g';
+  document.getElementById('d').value = 0;
   
-  if (KcCalculado) {
-    if (Q > Kc) mensaje += ' (Q > Kc, la reacción procederá hacia los reactivos)';
-    else if (Q < Kc) mensaje += ' (Q < Kc, la reacción procederá hacia los productos)';
-    else mensaje += ' (Q = Kc, el sistema está en equilibrio)';
-  }
+  document.getElementById('A').value = 0.5;
+  document.getElementById('B').value = 1.5;
+  document.getElementById('C').value = 0.2;
+  document.getElementById('D').value = 0;
   
-  mostrarResultado(mensaje);
-}
+  document.getElementById('tipoReaccion').value = 'exotermica';
+  document.getElementById('temperatura').value = 25;
   
-  // Mostrar resultado
+  // Mostrar mensaje
   const resultado = document.getElementById('resultado');
-  resultado.innerHTML = `
-    <h3>Resultado del cálculo</h3>
-    <p><strong>Fórmula:</strong> Kc = [C]<sup>${c}</sup> × [D]<sup>${d}</sup> / [A]<sup>${a}</sup> × [B]<sup>${b}</sup></p>
-    <p><strong>Sustitución:</strong> (${C}<sup>${c}</sup> × ${D}<sup>${d}</sup>) / (${A}<sup>${a}</sup> × ${B}<sup>${b}</sup>)</p>
-    <p class="result-value">Kc = ${Kc.toFixed(3)}</p>
-    <p>${interpretarKc(Kc)}</p>
-  `;
+  resultado.innerHTML = '<p class="success-message">Ejemplo de síntesis de amoníaco cargado. Haz clic en "Calcular" para ver resultados.</p>';
   resultado.style.display = 'block';
-  
-  // Mostrar imagen de Bulbasaur
-  mostrarBulbasaur();
 }
 
-function convertirAKp() {
-  if (!KcCalculado) {
-    alert('Primero calcule Kc');
-    return;
-  }
-  const temperatura = parseFloat(prompt('Ingrese temperatura en Kelvin:'));
-  const deltaN = calcularDeltaN();
-  const Kp = Kc * Math.pow(0.0821 * temperatura, deltaN);
-  mostrarResultado(`Kp = ${Kp.toFixed(3)} atm`);
-}
-
+// Función para interpretar valor de Kc
 function interpretarKc(Kc) {
   if (Kc > 1) return 'Kc > 1: En el equilibrio predominan los productos.';
   if (Kc < 1) return 'Kc < 1: En el equilibrio predominan los reactivos.';
-  return 'Kc ≈ 1: Concentraciones similares de reactivos y productos en el equilibrio.';
+  return 'Kc ≈ 1: Concentraciones similares de reactivos y productos.';
 }
 
-function mostrarBulbasaur() {
-  const container = document.createElement('div');
-  container.className = 'bulbasaur-container';
-  container.innerHTML = `
-    <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png" 
-         alt="Bulbasaur celebrando el equilibrio químico" 
-         class="bulbasaur-img">
-    <p>¡Equilibrio alcanzado! 🎉</p>
-  `;
-  
-  const resultado = document.getElementById('resultado');
-  resultado.appendChild(container);
-}
-
+// Función para explicar Le Chatelier
 function explicar(accion) {
   // Remover selección previa
   document.querySelectorAll('.le-chatelier').forEach(btn => {
@@ -270,10 +220,13 @@ function explicar(accion) {
         : 'En reacciones endotérmicas (absorben calor), al aumentar la temperatura el equilibrio se desplaza hacia los productos (→) para utilizar el calor añadido.';
       break;
     case 'presion':
-      explicacion = 'Efecto sobre el equilibrio:<br><br>'
-        + '• Aumentar presión: el sistema se desplaza hacia el lado con menos moles gaseosos<br>'
-        + '• Disminuir presión: el sistema se desplaza hacia el lado con más moles gaseosos<br><br>'
-        + 'Solo aplica cuando hay sustancias gaseosas y difiere el número de moles entre reactivos y productos.';
+      const deltaN = calcularDeltaN();
+      if (deltaN === 0) {
+        explicacion = 'No hay efecto: el número de moles gaseosos es igual en ambos lados.';
+      } else {
+        const lado = deltaN < 0 ? 'productos' : 'reactivos';
+        explicacion = `Al aumentar presión, el equilibrio se desplaza hacia los ${lado} (${Math.abs(deltaN)} menos moles gaseosos).`;
+      }
       break;
     case 'catalizador':
       explicacion = 'Los catalizadores no afectan la posición del equilibrio:<br><br>'
@@ -292,4 +245,28 @@ function explicar(accion) {
     <p>${explicacion}</p>
   `;
   divExplicacion.style.display = 'block';
+}
+
+// Función de validación
+function validarDatos() {
+  const a = parseInt(document.getElementById('a').value);
+  const b = parseInt(document.getElementById('b').value);
+  const c = parseInt(document.getElementById('c').value);
+  
+  if (a <= 0 || b <= 0 || c <= 0) {
+    alert('Los coeficientes estequiométricos deben ser mayores que 0');
+    return false;
+  }
+  
+  const A = parseFloat(document.getElementById('A').value);
+  const B = parseFloat(document.getElementById('B').value);
+  const C = parseFloat(document.getElementById('C').value);
+  const D = parseFloat(document.getElementById('D').value);
+  
+  if (A < 0 || B < 0 || C < 0 || D < 0) {
+    alert('Las concentraciones no pueden ser negativas');
+    return false;
+  }
+  
+  return true;
 }
